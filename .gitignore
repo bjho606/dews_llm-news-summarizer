@@ -1,0 +1,38 @@
+# [secret]
+
+# [private]
+.env
+
+# [template]
+# Visual Studio Code
+.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# JetBrains IDEs (IntelliJ, Rider, PyCharm, etc.)
+.idea/
+*.iml
+macOS system files
+.DS_Store
+.DS_Store?
+
+# Windows system files
+Thumbs.db
+Desktop.ini
+
+# Python bytecode
+pycache/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+env/
+venv/
+.venv/
+
+# Python build files
+build/
+dist/
+*.egg-info/
