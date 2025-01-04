@@ -1,0 +1,182 @@
+[
+  {
+    "title": "Sports News 1",
+    "summary": "Summary of Sports News 1",
+    "priority": 5,
+    "category": "sports"
+  },
+  {
+    "title": "Sports News 2",
+    "summary": "Summary of Sports News 2",
+    "priority": 8,
+    "category": "sports"
+  },
+  {
+    "title": "Sports News 3",
+    "summary": "Summary of Sports News 3",
+    "priority": 3,
+    "category": "sports"
+  },
+  {
+    "title": "Tech News 1",
+    "summary": "Summary of Tech News 1",
+    "priority": 7,
+    "category": "tech"
+  },
+  {
+    "title": "Tech News 2",
+    "summary": "Summary of Tech News 2",
+    "priority": 9,
+    "category": "tech"
+  },
+  {
+    "title": "Tech News 3",
+    "summary": "Summary of Tech News 3",
+    "priority": 6,
+    "category": "tech"
+  },
+  {
+    "title": "Business News 1",
+    "summary": "Summary of Business News 1",
+    "priority": 5,
+    "category": "business"
+  },
+  {
+    "title": "Business News 2",
+    "summary": "Summary of Business News 2",
+    "priority": 4,
+    "category": "business"
+  },
+  {
+    "title": "Business News 3",
+    "summary": "Summary of Business News 3",
+    "priority": 6,
+    "category": "business"
+  },
+  {
+    "title": "Entertainment News 1",
+    "summary": "Summary of Entertainment News 1",
+    "priority": 7,
+    "category": "entertainment"
+  },
+  {
+    "title": "Entertainment News 2",
+    "summary": "Summary of Entertainment News 2",
+    "priority": 5,
+    "category": "entertainment"
+  },
+  {
+    "title": "Entertainment News 3",
+    "summary": "Summary of Entertainment News 3",
+    "priority": 8,
+    "category": "entertainment"
+  },
+  {
+    "title": "Health News 1",
+    "summary": "Summary of Health News 1",
+    "priority": 5,
+    "category": "health"
+  },
+  {
+    "title": "Health News 2",
+    "summary": "Summary of Health News 2",
+    "priority": 6,
+    "category": "health"
+  },
+  {
+    "title": "Health News 3",
+    "summary": "Summary of Health News 3",
+    "priority": 4,
+    "category": "health"
+  },
+  {
+    "title": "Sports News 4",
+    "summary": "Summary of Sports News 4",
+    "priority": 9,
+    "category": "sports"
+  },
+  {
+    "title": "Sports News 5",
+    "summary": "Summary of Sports News 5",
+    "priority": 7,
+    "category": "sports"
+  },
+  {
+    "title": "Tech News 4",
+    "summary": "Summary of Tech News 4",
+    "priority": 10,
+    "category": "tech"
+  },
+  {
+    "title": "Tech News 5",
+    "summary": "Summary of Tech News 5",
+    "priority": 8,
+    "category": "tech"
+  },
+  {
+    "title": "Business News 4",
+    "summary": "Summary of Business News 4",
+    "priority": 3,
+    "category": "business"
+  },
+  {
+    "title": "Business News 5",
+    "summary": "Summary of Business News 5",
+    "priority": 8,
+    "category": "business"
+  },
+  {
+    "title": "Entertainment News 4",
+    "summary": "Summary of Entertainment News 4",
+    "priority": 6,
+    "category": "entertainment"
+  },
+  {
+    "title": "Entertainment News 5",
+    "summary": "Summary of Entertainment News 5",
+    "priority": 5,
+    "category": "entertainment"
+  },
+  {
+    "title": "Health News 4",
+    "summary": "Summary of Health News 4",
+    "priority": 8,
+    "category": "health"
+  },
+  {
+    "title": "Health News 5",
+    "summary": "Summary of Health News 5",
+    "priority": 7,
+    "category": "health"
+  },
+  {
+    "title": "Sports News 6",
+    "summary": "Summary of Sports News 6",
+    "priority": 6,
+    "category": "sports"
+  },
+  {
+    "title": "Tech News 6",
+    "summary": "Summary of Tech News 6",
+    "priority": 7,
+    "category": "tech"
+  },
+  {
+    "title": "Business News 6",
+    "summary": "Summary of Business News 6",
+    "priority": 9,
+    "category": "business"
+  },
+  {
+    "title": "Entertainment News 6",
+    "summary": "Summary of Entertainment News 6",
+    "priority": 8,
+    "category": "entertainment"
+  },
+  {
+    "title": "Health News 6",
+    "summary": "Summary of Health News 6",
+    "priority": 4,
+    "category": "health"
+  }
+]
