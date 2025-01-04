@@ -5,6 +5,23 @@ import requests
 import os
 
 
+command_map = {
+    "p": "politics",
+    "e": "economy",
+    "s": "society",
+    "l": "life/culture",
+    "c": "life/culture",
+    "lc": "life/culture",
+    "t": "tech",
+    "politics": "politics",
+    "economy": "economy",
+    "society": "society",
+    "life": "life/culture",
+    "culture": "culture",
+    "life/culture": "culture",
+    "tech": "tech",
+}
+
 # load .env
 load_dotenv()
 TOKEN = os.getenv("DISCORD_BOT_TOKEN")
@@ -34,8 +51,14 @@ async def ping(ctx):
 
 # Command: News {category} {count}
 @bot.command()
-async def news(ctx, category: str = None, limit: int = 5):
+async def news(ctx, command: str = None, limit: int = 5):
     try:
+        category = parse_command(command)
+
+        if category == "invalid":
+            await ctx.send("Invalid command. Please try again.")
+            return
+
         if limit < 1 or limit > 5:
             await ctx.send("Please enter a number between 1 and 5")
             return
@@ -74,6 +97,13 @@ def format_news(news_list, category, limit):
         formatted_news += f"{n['summary']}\n"
 
     return formatted_news
+
+
+def parse_command(command):
+    parsed_command = command_map.get(command)
+    if not parsed_command:
+        return "invalid"
+    return parsed_command
 
 
 bot.run(TOKEN)
