@@ -36,6 +36,10 @@ async def ping(ctx):
 @bot.command()
 async def news(ctx, category: str = None, count: int = 5):
     try:
+        if count < 1 or count > 5:
+            await ctx.send("Please enter a number between 1 and 5")
+            return
+
         params = {}
         if category:
             params["category"] = category
@@ -49,15 +53,26 @@ async def news(ctx, category: str = None, count: int = 5):
         if not news_list:
             await ctx.send("Sorry, couldn't find any news")
         else:
-            for n in news_list:
-                await ctx.send(format_news(n))
+            await ctx.send(format_news(news_list, category, count))
 
     except requests.exceptions.RequestException as e:
         print(e)
 
 
-def format_news(news_str):
-    formatted_news = []
+def format_news(news_list, category, count):
+    formatted_news = ""
+
+    if category:
+        if len(news_list) < count:
+            formatted_news += f"**Sorry, we only found {len(news_list)} news**\n"
+        formatted_news += f"**Here are the top {len(news_list)} news about {category}!**\n"
+    else:
+        formatted_news += "**Here are your daily news!**\n"
+
+    for n in news_list:
+        formatted_news += f"# {n['title']}\n"
+        formatted_news += f"{n['summary']}\n"
+
     return formatted_news
 
 
