@@ -5,6 +5,23 @@ import requests
 import os
 
 
+command_map = {
+    "p": "politics",
+    "e": "economy",
+    "s": "society",
+    "l": "life/culture",
+    "c": "life/culture",
+    "lc": "life/culture",
+    "t": "tech",
+    "politics": "politics",
+    "economy": "economy",
+    "society": "society",
+    "life": "life/culture",
+    "culture": "culture",
+    "life/culture": "culture",
+    "tech": "tech",
+}
+
 # load .env
 load_dotenv()
 TOKEN = os.getenv("DISCORD_BOT_TOKEN")
@@ -34,18 +51,29 @@ async def ping(ctx):
 
 # Command: News {category} {count}
 @bot.command()
-async def news(ctx, category: str = None, count: int = 5):
+async def news(ctx, command: str = None, limit: int = 5):
     try:
-        if count < 1 or count > 5:
+        # case 1: invalid command
+        category = "ALL"
+        if command:
+            category = parse_command(command)
+            if category == "INVALID":
+                await ctx.send("Invalid command. Please try again.")
+                return
+
+        # case 2: number of news out of range
+        if limit < 1 or limit > 5:
             await ctx.send("Please enter a number between 1 and 5")
             return
 
+        # set parameters for API
         params = {}
-        if category:
+        if category != "ALL":
             params["category"] = category
-        if count:
-            params["count"] = count
+        if limit:
+            params["limit"] = limit
 
+        # send request and get response
         response = requests.get(URL, params=params)
         response.raise_for_status()
         news_list = response.json()
@@ -53,17 +81,18 @@ async def news(ctx, category: str = None, count: int = 5):
         if not news_list:
             await ctx.send("Sorry, couldn't find any news")
         else:
-            await ctx.send(format_news(news_list, category, count))
+            await ctx.send(format_news(news_list, category, limit))
 
     except requests.exceptions.RequestException as e:
         print(e)
 
 
-def format_news(news_list, category, count):
+# make actual bot message based on response
+def format_news(news_list, category, limit):
     formatted_news = ""
 
-    if category:
-        if len(news_list) < count:
+    if category != "ALL":
+        if len(news_list) < limit:
             formatted_news += f"**Sorry, we only found {len(news_list)} news**\n"
         formatted_news += f"**Here are the top {len(news_list)} news about {category}!**\n"
     else:
@@ -74,6 +103,15 @@ def format_news(news_list, category, count):
         formatted_news += f"{n['summary']}\n"
 
     return formatted_news
+
+
+# parse short command into actual category
+# invalid category command is returned INVALID
+def parse_command(command):
+    parsed_command = command_map.get(command)
+    if not parsed_command:
+        return "INVALID"
+    return parsed_command
 
 
 bot.run(TOKEN)

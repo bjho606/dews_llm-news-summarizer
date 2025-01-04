@@ -24,12 +24,14 @@ class NewsItem(BaseModel):
 # News GET API
 @app.get("/news", response_model=List[NewsItem])
 async def get_news(category: Optional[str] = None, limit: Optional[int] = 5):
+    print(f"try querying {limit} news")
     query = {}
     if category:
         query = {"category": category}
 
     cursor = news_collection.find(query).sort("priority", -1).limit(limit)
     news_list = await cursor.to_list(length=limit)
+    print(f"queried {len(news_list)} news")
 
     if not news_list:
         raise HTTPException(status_code=404)
