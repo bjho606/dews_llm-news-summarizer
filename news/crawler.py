@@ -1,6 +1,6 @@
-from typing import List, Dict
+from typing import List, Dict, Optional
 import requests
-from news.parser import HeadlineParser
+from parser import HeadlineParser, ContentParser
 
 class PortalNews:
     def __init__(self, base_url: str, *args: str) -> None:
@@ -36,11 +36,20 @@ def get_headline_news(category: str, portal: PortalNews) -> List[Dict[str, str]]
         return []
     parser = HeadlineParser()
     parser.feed(response.text)
-    result = parser.headlines[:]
-    return result
+    return parser.headlines[:]
 
 
-def crawl(portal_name: str, *categories: str):
+def get_content(url: str) -> Optional[List[str]]:
+    response = requests.get(url)
+    if response.status_code != 200:
+        print(f"failed to retrieve the page from url={url}")
+        return None
+    parser = ContentParser()
+    parser.feed(response.text)
+    return parser.article_content[:]
+
+
+def crawl(portal_name: str, *categories: str) -> Dict[str, Dict[str, str]]:
     if portal_name not in news_dict:
         raise Exception("no such portal_name: {}".format(portal_name))
     portal: PortalNews = news_dict[portal_name]
@@ -49,13 +58,18 @@ def crawl(portal_name: str, *categories: str):
         headline_news = get_headline_news(category, portal)
         if headline_news is None:
             continue
-        
+        for article in headline_news:
+            if "url" not in article:
+                raise Exception("headline news parse error")
+            content = get_content(article["url"])
+            article["content"] = content
+        result[category] = headline_news
     return result
 
 
 def main():
     portal_name = "naver"
-    categories = ["politics"]
+    categories = ["politics", "economy"]
     crawl(portal_name, *categories)
 
 

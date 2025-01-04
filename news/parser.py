@@ -31,3 +31,26 @@ class HeadlineParser(HTMLParser):
     def handle_data(self, data: str) -> None:
         if self.in_url:
             self.current_title += data.strip()
+
+
+class ContentParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.in_article = False
+        self.article_content = []
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "article":
+            attrs = dict(attrs)
+            if attrs.get("id") == "dic_area":
+                self.in_article = True
+
+    def handle_endtag(self, tag):
+        if tag == "article" and self.in_article:
+            self.in_article = False
+
+    def handle_data(self, data):
+        if self.in_article:
+            sentence = data.strip()
+            if sentence and not sentence.isspace():
+                self.article_content.append(data.strip())
