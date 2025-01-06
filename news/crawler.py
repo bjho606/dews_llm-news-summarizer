@@ -49,7 +49,7 @@ def get_content(url: str) -> Optional[List[str]]:
     return parser.article_content[:]
 
 
-def crawl(portal_name: str, *categories: str) -> Dict[str, Dict[str, str | List[str]]]:
+def crawl(portal_name: str, *categories: str) -> Dict[str, List[Dict[str, str | List[str]]]]:
     if portal_name not in news_dict:
         raise Exception("no such portal_name: {}".format(portal_name))
     portal: PortalNews = news_dict[portal_name]
