@@ -3,8 +3,30 @@ from dotenv import load_dotenv
 import discord
 import requests
 import os
+import logging
+import time
 
+from requests import RequestException
 
+# load .env
+load_dotenv()
+TOKEN = os.getenv("DISCORD_BOT_TOKEN")
+URL = "http://fastapi-server:8000"
+
+# set intents
+intents = discord.Intents.default()
+intents.messages = True
+intents.guilds = True
+intents.message_content = True
+
+# create a bot instance
+bot = commands.Bot(command_prefix="/", intents=intents)
+
+# set logger
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# command shortcuts
 command_map = {
     "p": "politics",
     "e": "economy",
@@ -22,36 +44,44 @@ command_map = {
     "tech": "tech",
 }
 
-# load .env
-load_dotenv()
-TOKEN = os.getenv("DISCORD_BOT_TOKEN")
-URL = os.getenv("BASE_URL")
 
-# set intents
-intents = discord.Intents.default()
-intents.messages = True
-intents.guilds = True
-intents.message_content = True
+# connecting to fastapi server with several attempts
+def call_fastapi():
+    attempts = 5
+    time_interval = 2
 
-# create a bot instance
-bot = commands.Bot(command_prefix="/", intents=intents)
+    while attempts > 0:
+        try:
+            resource = requests.get(URL)
+            if resource.status_code == 200:
+                logger.info(f"Successfully connected to {URL}")
+                return True
+        except RequestException:
+            time.sleep(time_interval)
+            attempts -= 1
+            logger.info(f"Retrying... {attempts} attempts left")
+
+    return False
 
 
 # Event: Bot is online
 @bot.event
 async def on_ready():
-    print("bot activated")
+    logger.info("Bot is now online")
 
 
 # Command: Ping
 @bot.command()
 async def ping(ctx):
+    logger.info("Ping!")
     await ctx.send("Pong!")
 
 
 # Command: News {category} {count}
 @bot.command()
 async def news(ctx, command: str = None, limit: int = 5):
+    logger.info("News command received")
+
     try:
         # case 1: invalid command
         category = "ALL"
@@ -74,17 +104,27 @@ async def news(ctx, command: str = None, limit: int = 5):
             params["limit"] = limit
 
         # send request and get response
-        response = requests.get(URL, params=params)
+        request_url = URL + "/news"
+        logger.info(f"Sending request to {request_url} with params: {params}")
+        response = requests.get(request_url, params=params)
         response.raise_for_status()
         news_list = response.json()
 
         if not news_list:
             await ctx.send("Sorry, couldn't find any news")
         else:
+            logger.info(f"Found {len(news_list)} news")
             await ctx.send(format_news(news_list, category, limit))
 
-    except requests.exceptions.RequestException as e:
-        print(e)
+    except requests.exceptions.HTTPError as http_err:
+        # If HTTP error occurs (e.g., 404, 500)
+        logger.error(f"HTTP error occurred: {http_err.response.status_code} - {http_err.response.text}")
+        await ctx.send(f"Error: {http_err.response.status_code} - {http_err.response.text}")
+
+    except requests.exceptions.RequestException as req_err:
+        # General request errors
+        logger.warning(f"Request error occurred: {req_err}")
+        await ctx.send("There was an issue with the request.")
 
 
 # make actual bot message based on response
@@ -114,4 +154,8 @@ def parse_command(command):
     return parsed_command
 
 
+# connect to fastapi server
+call_fastapi()
+
+# run bot
 bot.run(TOKEN)
