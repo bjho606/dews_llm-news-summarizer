@@ -39,17 +39,17 @@ def get_headline_news(category: str, portal: PortalNews) -> List[Dict[str, str]]
     return parser.headlines[:]
 
 
-def get_content(url: str) -> Optional[List[str]]:
+def get_content(url: str) -> str:
     response = requests.get(url)
     if response.status_code != 200:
         print(f"failed to retrieve the page from url={url}")
         return None
     parser = ContentParser()
     parser.feed(response.text)
-    return parser.article_content[:]
+    return "\n".join(parser.article_content[:])
 
 
-def crawl(portal_name: str, *categories: str) -> Dict[str, List[Dict[str, str | List[str]]]]:
+def crawl(portal_name: str, *categories: str) -> Dict[str, List[Dict[str, str]]]:
     if portal_name not in news_dict:
         raise Exception("no such portal_name: {}".format(portal_name))
     portal: PortalNews = news_dict[portal_name]
