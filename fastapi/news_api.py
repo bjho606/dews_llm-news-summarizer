@@ -2,13 +2,17 @@ from fastapi import FastAPI, HTTPException
 from typing import List, Optional
 from pydantic import BaseModel
 from motor.motor_asyncio import AsyncIOMotorClient
+import logging
 
-
-# App instance
+# app instance
 app = FastAPI()
 
+# set logger
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 # Sample in-memory news data
-MONGO_URL = "mongodb://localhost:27017"
+MONGO_URL = "mongodb://mongodb:27017"
 client = AsyncIOMotorClient(MONGO_URL)
 db = client.news_database
 news_collection = db.news
@@ -24,17 +28,18 @@ class NewsItem(BaseModel):
 # News GET API
 @app.get("/news", response_model=List[NewsItem])
 async def get_news(category: Optional[str] = None, limit: Optional[int] = 5):
-    print(f"try querying {limit} news")
+    logger.info(f"Querying {limit} news")
+
     query = {}
     if category:
         query = {"category": category}
 
     cursor = news_collection.find(query).sort("priority", -1).limit(limit)
     news_list = await cursor.to_list(length=limit)
-    print(f"queried {len(news_list)} news")
+    logger.info(f"Queried {len(news_list)} news")
 
     if not news_list:
-        raise HTTPException(status_code=404)
+        raise HTTPException(status_code=404, detail="No news found")
 
     return news_list
 
@@ -42,4 +47,5 @@ async def get_news(category: Optional[str] = None, limit: Optional[int] = 5):
 # Root endpoint
 @app.get("/")
 def read_root():
+    logger.info("Root accessed")
     return {"server status: OK"}

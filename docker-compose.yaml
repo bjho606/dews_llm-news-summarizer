@@ -1,0 +1,25 @@
+services:
+  discord-bot:
+    container_name: discord-bot
+    build: ./discord
+    depends_on:
+      - fastapi-server
+    restart: always
+
+  fastapi-server:
+    container_name: fastapi-server
+    build: ./fastapi
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongo
+    restart: always
+
+  mongo:
+    container_name: mongodb
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    restart: always
