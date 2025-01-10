@@ -24,7 +24,7 @@ news_dict: Dict[str, PortalNews] = {
 }
 
 
-def get_headline_news(category: str, portal: PortalNews) -> List[Dict[str, str]]:
+def get_news(category: str, portal: PortalNews) -> List[Dict[str, str]]:
     base_url: str = portal.base_url
     path_dict: dict[str, str] = portal.category_to_path
     if category not in path_dict:
@@ -36,7 +36,7 @@ def get_headline_news(category: str, portal: PortalNews) -> List[Dict[str, str]]
         return []
     parser = HeadlineParser()
     parser.feed(response.text)
-    return parser.headlines[:]
+    return parser.items[:]
 
 
 def get_content(url: str) -> str:
@@ -49,28 +49,30 @@ def get_content(url: str) -> str:
     return "\n".join(parser.article_content[:])
 
 
-def crawl(portal_name: str, *categories: str) -> Dict[str, List[Dict[str, str]]]:
+def crawl(portal_name: str, *categories: str) -> List[Dict[str, str]]:
     if portal_name not in news_dict:
         raise Exception("no such portal_name: {}".format(portal_name))
     portal: PortalNews = news_dict[portal_name]
-    result = {}
+    result = []
     for category in categories:
-        headline_news = get_headline_news(category, portal)
-        if headline_news is None:
+        news = get_news(category, portal)
+        if news is None:
             continue
-        for article in headline_news:
+        for article in news:
             if "url" not in article:
                 raise Exception("headline news parse error")
+            article["category"] = category
             content = get_content(article["url"])
             article["content"] = content
-        result[category] = headline_news
+            result.append(article)
     return result
 
 
 def main():
     portal_name = "naver"
-    categories = ["politics", "economy"]
-    crawl(portal_name, *categories)
+    categories = ["politics", "economy", "society", "culture", "scitech"]
+    result = crawl(portal_name, *categories)
+    print(len(result))
 
 
 if __name__ == "__main__":
