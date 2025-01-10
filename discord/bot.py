@@ -119,7 +119,7 @@ async def news(ctx, command: str = None, limit: int = 5):
     except requests.exceptions.HTTPError as http_err:
         # If HTTP error occurs (e.g., 404, 500)
         logger.error(f"HTTP error occurred: {http_err.response.status_code} - {http_err.response.text}")
-        await ctx.send(f"Error: {http_err.response.status_code} - {http_err.response.text}")
+        await ctx.send(f"Something went wrong. Please try again later.")
 
     except requests.exceptions.RequestException as req_err:
         # General request errors
