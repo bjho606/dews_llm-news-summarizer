@@ -1,6 +1,7 @@
 from typing import List, Dict, Optional
 import requests
 from parser import HeadlineParser, ContentParser
+import csv
 
 class PortalNews:
     def __init__(self, base_url: str, *args: str) -> None:
@@ -72,7 +73,11 @@ def main():
     portal_name = "naver"
     categories = ["politics", "economy", "society", "culture", "scitech"]
     result = crawl(portal_name, *categories)
-    print(len(result))
+    fields = ["title", "category", "url", "content"]
+    with open("example.tsv", mode="w", encoding="utf-8", newline="") as file:
+        writer = csv.DictWriter(file, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(result)
 
 
 if __name__ == "__main__":
