@@ -1,2 +1,6 @@
 requests
 transformers
+torch
+scikit-learn
+sentence-transformers
+openai

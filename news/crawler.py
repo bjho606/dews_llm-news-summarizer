@@ -1,3 +1,4 @@
+import utils.converter as converter
 from typing import List, Dict, Optional
 import requests
 from parser import HeadlineParser, ContentParser
@@ -72,13 +73,15 @@ def crawl(portal_name: str, *categories: str) -> List[Dict[str, str]]:
 def main():
     portal_name = "naver"
     categories = ["politics", "economy", "society", "culture", "scitech"]
-    result = crawl(portal_name, *categories)
-    fields = ["title", "category", "url", "content"]
-    with open("example.tsv", mode="w", encoding="utf-8", newline="") as file:
-        writer = csv.DictWriter(file, fieldnames=fields)
-        writer.writeheader()
-        writer.writerows(result)
+    crawled_data = crawl(portal_name, *categories)
 
+    # Generate a filename with the current date
+    # date_str = datetime.now().strftime("%Y-%m-%d")
+    filename = f"example.tsv"
+
+    # Save the data to a CSV file
+    converter.save_news_to_csv(crawled_data, filename)
+    print(f"News data saved to {filename}")
 
 if __name__ == "__main__":
     main()
