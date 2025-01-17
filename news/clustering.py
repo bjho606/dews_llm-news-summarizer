@@ -13,20 +13,20 @@ from datetime import datetime
 # [1. Clustering]
 # 1. Prepare news data
 news_data = converter.load_news_from_csv("example.tsv")
-# print(news_data)
+print(len(news_data))
 
 # 2. Combine title+content for Calculation
 texts = [f"{item['title']} {item['content']}" for item in news_data]
 # print(texts)
 
 # 3. Load Sentence-BERT model & Create embedding
-model = SentenceTransformer("all-MiniLM-L6-v2")
+model = SentenceTransformer("jhgan/ko-sroberta-multitask")
 embeddings = model.encode(texts)
 # embeddings = normalize(embeddings)
 print(embeddings)
 
 # 4. Perform Clustering - with DBSCAN
-dbscan = DBSCAN(eps=0.1, min_samples=2, metric="cosine")
+dbscan = DBSCAN(eps=0.3, min_samples=1, metric="cosine")
 clusters = dbscan.fit_predict(embeddings)
 print(clusters)
 
